@@ -1,0 +1,176 @@
+=== 1. MASS AUDIT ===
+   1800  Glider (body, chassis, 2 motors, interior, 7 seats, HVAC)
+     41  PV skin (11.6 m^2 VIPV laminate @3.5 kg/m^2)
+     35  TEG subsystem (2 m^2 modules + cold plate)
+     32  Regenerative suspension (4 EM dampers)
+     12  Power electronics (multi-input MPPT, 800V DC-DC)
+     15  Thermal management (added pump/HX capacity)
+     10  HV wiring / harness (distributed PV+TEG)
+      8  Coolant + loops (TEG + pack)
+     20  Added structure (roof/panel load paths)
+      9  Encapsulation / protective coatings
+  harvesting+integration subtotal = 182 kg
+  vehicle mass P0: 2482 kg (cap 250.0 kWh)
+  vehicle mass PA: 2696 kg (cap 250.0 kWh)
+  vehicle mass PB: 2482 kg (cap 175.0 kWh)
+
+=== 2. TEG THERMAL NETWORK ===
+  dT_leg = 3.7668
+  q_through = 565.0224
+  P_teg = 3.8443
+  P_opt = 11.3004
+  E_teg = 0.0192
+  E_teg_opt = 0.0565
+  adopted E_teg = 0.019 kWh/day
+
+=== 3. WLTP CONSUMPTION (eta_regen=0.60 base) ===
+  reconstruction: 23.29 km (off 23.27), 46.5 km/h (off 46.5)
+  P0: combined 237 Wh/km, city 210 Wh/km
+  PA: combined 250 Wh/km, city 225 Wh/km
+  (eta_regen=0.72 optimistic: P0 combined 226 Wh/km)
+
+=== 4. VALIDATION vs Aptera / Lightyear ===
+  Aptera: model 84 Wh/km (claim 65); solar 52 km/day (claim 64)
+  Lightyear0: model 132 Wh/km (claim 96); solar 44 km/day (claim 70)
+
+=== 5-8. 8760-h SIMULATION (base: eta_regen=0.60, kappa=0.80, P0) ===
+  -- Scenario II 50km urban --
+    Phoenix  PSH=6.30 f_ss=0.94 grid=  1062 kWh/yr charges=  6/yr -> quasi-self-sufficient
+    Lucknow  PSH=5.20 f_ss=0.77 grid=  1228 kWh/yr charges=  7/yr -> moderately solar-assisted
+    London   PSH=2.70 f_ss=0.51 grid=  2132 kWh/yr charges= 12/yr -> moderately solar-assisted
+  -- Scenario I 100km mixed --
+    Phoenix  PSH=6.30 f_ss=0.47 grid=  5216 kWh/yr charges= 29/yr -> grid-dependent
+    Lucknow  PSH=5.20 f_ss=0.39 grid=  5926 kWh/yr charges= 33/yr -> grid-dependent
+    London   PSH=2.70 f_ss=0.24 grid=  6996 kWh/yr charges= 39/yr -> grid-dependent
+
+=== 7. kappa_pv SENSITIVITY (Scenario II, annual f_ss, idealized climate; TMY values below) ===
+    Phoenix  kappa=0.60/0.70/0.80 -> f_ss = 0.71 / 0.82 / 0.94
+    Lucknow  kappa=0.60/0.70/0.80 -> f_ss = 0.59 / 0.68 / 0.77
+    London   kappa=0.60/0.70/0.80 -> f_ss = 0.39 / 0.45 / 0.51
+
+=== REAL-DATA VALIDATION TIER 1: satellite-derived annual GHI+temp (Global Solar Atlas) ===
+    II 50km  Phoenix  assumed=6.30 satellite-derived=5.807 -> f_ss 0.94->0.88 (highly solar-assisted) [CLASS CHANGED]
+    II 50km  Lucknow  assumed=5.20 satellite-derived=4.728 -> f_ss 0.77->0.72 (moderately solar-assisted) [class unchanged]
+    II 50km  London   assumed=2.70 satellite-derived=2.829 -> f_ss 0.51->0.53 (moderately solar-assisted) [class unchanged]
+    I 100km  Phoenix  assumed=6.30 satellite-derived=5.807 -> f_ss 0.47->0.44 (grid-dependent) [class unchanged]
+    I 100km  Lucknow  assumed=5.20 satellite-derived=4.728 -> f_ss 0.39->0.36 (grid-dependent) [class unchanged]
+    I 100km  London   assumed=2.70 satellite-derived=2.829 -> f_ss 0.24->0.25 (grid-dependent) [class unchanged]
+    SUMMARY: 5/6 classes unchanged; max |df_ss| = 0.06
+
+=== REAL-DATA VALIDATION TIER 2: satellite-derived HOURLY TMY (NSRDB / PVGIS) ===
+    II 50km  Phoenix  TMY GHI=2110.0 kWh/m2/yr (PSH=5.781) Tmean=23.2C -> f_ss syn 0.94 -> TMY 0.83 (highly solar-assisted) [CLASS CHANGED] charges 27->5/yr, grid 885 kWh/yr, relief 82%
+    I 100km  Phoenix  TMY GHI=2110.0 kWh/m2/yr (PSH=5.781) Tmean=23.2C -> f_ss syn 0.47 -> TMY 0.42 (grid-dependent) [class unchanged] charges 54->31/yr, grid 5541 kWh/yr, relief 42%
+    II 50km  Lucknow  TMY GHI=1843.6 kWh/m2/yr (PSH=5.051) Tmean=26.8C -> f_ss syn 0.77 -> TMY 0.71 (moderately solar-assisted) [class unchanged] charges 27->8/yr, grid 1422 kWh/yr, relief 71%
+    I 100km  Lucknow  TMY GHI=1843.6 kWh/m2/yr (PSH=5.051) Tmean=26.8C -> f_ss syn 0.39 -> TMY 0.36 (grid-dependent) [class unchanged] charges 53->35/yr, grid 6272 kWh/yr, relief 36%
+    II 50km  London   TMY GHI=1050.7 kWh/m2/yr (PSH=2.879) Tmean=11.1C -> f_ss syn 0.51 -> TMY 0.52 (moderately solar-assisted) [class unchanged] charges 24->12/yr, grid 2122 kWh/yr, relief 52%
+    I 100km  London   TMY GHI=1050.7 kWh/m2/yr (PSH=2.879) Tmean=11.1C -> f_ss syn 0.24 -> TMY 0.25 (grid-dependent) [class unchanged] charges 50->39/yr, grid 6982 kWh/yr, relief 25%
+    database agreement (TMY annual GHI vs Global Solar Atlas GHI):
+      Phoenix   2110.0 vs  2119.4 kWh/m2/yr (-0.4%)
+      Lucknow   1843.6 vs  1725.6 kWh/m2/yr (+6.8%)
+      London    1050.7 vs  1032.7 kWh/m2/yr (+1.7%)
+
+=== GAP DECOMPOSITION (Scen. II): synthetic -> synthetic at TMY totals (magnitude) -> TMY (distribution) ===
+    Phoenix  f_ss 0.938 -> 0.879 -> 0.832: magnitude +0.058, distribution +0.047, total +0.106
+    Lucknow  f_ss 0.771 -> 0.741 -> 0.713: magnitude +0.030, distribution +0.027, total +0.058
+    London   f_ss 0.509 -> 0.539 -> 0.517: magnitude -0.030, distribution +0.022, total -0.008
+
+=== TMY INTER-RELEASE ROBUSTNESS (Phoenix NSRDB TMY-2022..2025) ===
+    TMY-2022 II 50km  PSH=5.815 f_ss=0.836 charges=5/yr grid=881 kWh/yr
+    TMY-2022 I 100km  PSH=5.815 f_ss=0.421 charges=31/yr grid=5585 kWh/yr
+    TMY-2023 II 50km  PSH=5.781 f_ss=0.832 charges=5/yr grid=885 kWh/yr
+    TMY-2023 I 100km  PSH=5.781 f_ss=0.419 charges=31/yr grid=5541 kWh/yr
+    TMY-2024 II 50km  PSH=5.828 f_ss=0.834 charges=5/yr grid=883 kWh/yr
+    TMY-2024 I 100km  PSH=5.828 f_ss=0.420 charges=31/yr grid=5581 kWh/yr
+    TMY-2025 II 50km  PSH=5.827 f_ss=0.840 charges=4/yr grid=707 kWh/yr
+    TMY-2025 I 100km  PSH=5.827 f_ss=0.422 charges=31/yr grid=5566 kWh/yr
+
+=== DESIGN LEVERS ON THE SATELLITE TMY (paper Sec. V-D, Phoenix II) ===
+    Phoenix  kappa=0.60/0.70/0.80 -> f_ss = 0.63 / 0.73 / 0.83
+    Lucknow  kappa=0.60/0.70/0.80 -> f_ss = 0.54 / 0.63 / 0.71
+    London   kappa=0.60/0.70/0.80 -> f_ss = 0.40 / 0.46 / 0.52
+    Phoenix kappa needed for f_ss = 0.90: 0.87
+    eta_regen 0.60 -> 0.72: city 210 -> 195 Wh/km, f_ss 0.832 -> 0.883
+    suspension 50/100/150/200 W -> f_ss 0.812 / 0.818 / 0.825 / 0.832
+    PV area for f_ss = 1 (full simulation, mass fed back): 14.06 m^2
+    A=11.6 cap=150: f_ss=0.878 relief=86.1% grid=  640 kWh/yr (lumpy: plug-ins x refill size) mass=2281.6 kg plug-ins=6
+    A=11.6 cap=200: f_ss=0.854 relief=85.1% grid=  706 kWh/yr (lumpy: plug-ins x refill size) mass=2381.6 kg plug-ins=5
+    A=11.6 cap=250: f_ss=0.832 relief=82.0% grid=  884 kWh/yr (lumpy: plug-ins x refill size) mass=2481.6 kg plug-ins=5
+    A=15.0 cap=150: f_ss=1.123 relief=95.4% grid=  215 kWh/yr (lumpy: plug-ins x refill size) mass=2293.5 kg plug-ins=2
+    A=15.0 cap=200: f_ss=1.093 relief=97.0% grid=  140 kWh/yr (lumpy: plug-ins x refill size) mass=2393.5 kg plug-ins=1
+    A=15.0 cap=250: f_ss=1.064 relief=96.4% grid=  178 kWh/yr (lumpy: plug-ins x refill size) mass=2493.5 kg plug-ins=1
+
+=== TEG MASS-vs-OUTPUT TRADEOFF ===
+    35 kg -> 17.5 kWh pack; TEG needs 921 days (2.5 yr) to generate that at 0.019 kWh/day
+
+=== REGEN-SUSPENSION SENSITIVITY (Phoenix II, f_ss, idealized climate; TMY values above) ===
+    {50: 0.918, 100: 0.924, 150: 0.931, 200: 0.938}
+
+=== NO-SOLAR BASELINE charges/yr (for honest grid-relief) ===
+    II 50km Phoenix : no-solar  28/yr -> solar   6/yr (79% fewer)
+    II 50km Lucknow : no-solar  27/yr -> solar   7/yr (74% fewer)
+    II 50km London  : no-solar  24/yr -> solar  12/yr (50% fewer)
+    I 100km Phoenix : no-solar  54/yr -> solar  29/yr (46% fewer)
+    I 100km Lucknow : no-solar  53/yr -> solar  33/yr (38% fewer)
+    I 100km London  : no-solar  50/yr -> solar  39/yr (22% fewer)
+
+=== 6. DESIGN INVERSION (closed form, battery-side c) ===
+  Scenario II 50km:
+    Phoenix  synthetic: A_req =  12.8 m^2, D_max = 44.2 km/day | TMY: A_req =  14.4 m^2, D_max = 37.5 km/day
+    Lucknow  synthetic: A_req =  15.6 m^2, D_max = 33.3 km/day | TMY: A_req =  16.9 m^2, D_max = 29.6 km/day
+    London   synthetic: A_req =  24.3 m^2, D_max = 20.0 km/day | TMY: A_req =  23.9 m^2, D_max = 20.5 km/day
+  Scenario I 100km:
+    Phoenix  synthetic: A_req =  25.3 m^2, D_max = 39.5 km/day | TMY: A_req =  28.8 m^2, D_max = 33.6 km/day
+    Lucknow  synthetic: A_req =  30.8 m^2, D_max = 29.9 km/day | TMY: A_req =  33.4 m^2, D_max = 26.6 km/day
+    London   synthetic: A_req =  51.1 m^2, D_max = 18.3 km/day | TMY: A_req =  50.2 m^2, D_max = 18.7 km/day
+
+=== 7. ECONOMICS & GRID RELIEF (tariffs USD/kWh: Phoenix 0.1576, Lucknow 0.0687, London 0.3520) ===
+    synthetic II 50km Phoenix : relief 78.4% ( 3862 kWh/yr), save $  609/yr, payback 15.7 yr, PV-only  7.3 yr
+    synthetic II 50km Lucknow : relief 75.4% ( 3757 kWh/yr), save $  258/yr, payback 37.0 yr, PV-only 17.3 yr
+    synthetic II 50km London  : relief 50.9% ( 2241 kWh/yr), save $  789/yr, payback 12.1 yr, PV-only  5.7 yr
+    synthetic I 100km Phoenix : relief 47.4% ( 4631 kWh/yr), save $  730/yr, payback 13.1 yr, PV-only  6.1 yr
+    synthetic I 100km Lucknow : relief 39.2% ( 3857 kWh/yr), save $  265/yr, payback 36.1 yr, PV-only 16.8 yr
+    synthetic I 100km London  : relief 24.4% ( 2254 kWh/yr), save $  794/yr, payback 12.0 yr, PV-only  5.6 yr
+    TMY       II 50km Phoenix : relief 82.0% ( 3999 kWh/yr), save $  630/yr, payback 15.2 yr, PV-only  7.1 yr
+    TMY       II 50km Lucknow : relief 71.3% ( 3550 kWh/yr), save $  244/yr, payback 39.2 yr, PV-only 18.3 yr
+    TMY       II 50km London  : relief 51.7% ( 2278 kWh/yr), save $  802/yr, payback 11.9 yr, PV-only  5.6 yr
+    TMY       I 100km Phoenix : relief 41.9% ( 4069 kWh/yr), save $  641/yr, payback 14.9 yr, PV-only  7.0 yr
+    TMY       I 100km Lucknow : relief 36.3% ( 3563 kWh/yr), save $  245/yr, payback 39.0 yr, PV-only 18.2 yr
+    TMY       I 100km London  : relief 24.8% ( 2292 kWh/yr), save $  807/yr, payback 11.9 yr, PV-only  5.5 yr
+
+=== 8. MULTI-OBJECTIVE (Phoenix II, satellite TMY, mass fed back into consumption) ===
+    A= 8.0 cap=150: grid= 1716 kWh/yr mass= 2269 kg cost=$15610 f_ss=0.617
+    A= 8.0 cap=200: grid= 1848 kWh/yr mass= 2369 kg cost=$20110 f_ss=0.600
+    A= 8.0 cap=250: grid= 1948 kWh/yr mass= 2469 kg cost=$24610 f_ss=0.585
+    A= 8.0 cap=300: grid= 2124 kWh/yr mass= 2569 kg cost=$29110 f_ss=0.570
+    A=11.6 cap=150: grid=  640 kWh/yr mass= 2282 kg cost=$16560 f_ss=0.878
+    A=11.6 cap=200: grid=  706 kWh/yr mass= 2382 kg cost=$21060 f_ss=0.854
+    A=11.6 cap=250: grid=  884 kWh/yr mass= 2482 kg cost=$25560 f_ss=0.832
+    A=11.6 cap=300: grid=  848 kWh/yr mass= 2582 kg cost=$30060 f_ss=0.811
+    A=15.0 cap=150: grid=  215 kWh/yr mass= 2294 kg cost=$17457 f_ss=1.123
+    A=15.0 cap=200: grid=  140 kWh/yr mass= 2394 kg cost=$21957 f_ss=1.093
+    A=15.0 cap=250: grid=  178 kWh/yr mass= 2494 kg cost=$26457 f_ss=1.064
+    A=15.0 cap=300: grid=  214 kWh/yr mass= 2594 kg cost=$30957 f_ss=1.037
+    A=20.0 cap=150: grid=    0 kWh/yr mass= 2311 kg cost=$18776 f_ss=1.480
+    A=20.0 cap=200: grid=    0 kWh/yr mass= 2411 kg cost=$23276 f_ss=1.440
+    A=20.0 cap=250: grid=    0 kWh/yr mass= 2511 kg cost=$27776 f_ss=1.403
+    A=20.0 cap=300: grid=    0 kWh/yr mass= 2611 kg cost=$32276 f_ss=1.368
+
+=== COST BREAKDOWN (USD add-on) ===
+    $ 3060  PV skin (2.55 kWp @ ~$1.2/Wp incl. integration)
+    $  800  Multi-input MPPT / power electronics
+    $ 2500  TEG subsystem (~1250 modules + cold plate)
+    $ 2000  Regenerative suspension (4 EM dampers)
+    $ 1200  HV wiring / structure / coatings
+    $ 9560  TOTAL as-specified;  $4460  PV-only (drop TEG 2500 + regen susp 2000 + half of wiring/structure 600)
+
+=== WLTP RECONSTRUCTION ERROR vs official WLTC 3b ===
+    Low        dist= 3.073 km (err -0.71%)  vmax= 53.7 (off 56.5)
+    Medium     dist= 4.782 km (err +0.55%)  vmax= 72.8 (off 76.6)
+    High       dist= 7.182 km (err +0.28%)  vmax= 92.5 (off 97.4)
+    ExtraHigh  dist= 8.254 km (err +0.00%)  vmax=124.7 (off 131.3)
+    TOTAL      dist=23.292 km (err +0.11%)  vmax=124.7 (off 131.3)
+
+=== SYNTHETIC CLIMATE ERROR vs SATELLITE-DERIVED hourly TMY ===
+    Phoenix  annual err +9.0%, monthly MAPE 11.3%
+    Lucknow  annual err +3.0%, monthly MAPE 12.9%
+    London   annual err -6.2%, monthly MAPE 12.1%

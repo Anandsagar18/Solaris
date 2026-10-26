@@ -1,0 +1,34 @@
+cff-version: 1.2.0
+message: "If you use SOLARIS, please cite the paper below."
+title: "SOLARIS: An open toolkit for solar-assisted heavy EV feasibility assessment"
+version: 1.1.0
+date-released: 2026-10-28
+license: MIT
+repository-code: "https://github.com/Anandsagar18/Solaris"
+authors:
+  - family-names: Gaikwad
+    given-names: Anandsagar
+    affiliation: "Rajiv Gandhi Institute of Petroleum Technology"
+  - family-names: Kumar
+    given-names: Aditya
+    affiliation: "Rajiv Gandhi Institute of Petroleum Technology"
+  - family-names: Deo
+    given-names: Arjun
+    affiliation: "Rajiv Gandhi Institute of Petroleum Technology"
+keywords:
+  - vehicle-integrated photovoltaics
+  - solar electric vehicle
+  - energy-balance simulation
+  - typical meteorological year
+preferred-citation:
+  type: conference-paper
+  title: "SOLARIS: A First-Principles, Drive-Cycle- and Climate-Resolved Methodology and Open Toolkit for Assessing Solar-Assisted Heavy Electric Vehicles"
+  authors:
+    - family-names: Gaikwad
+      given-names: Anandsagar
+    - family-names: Kumar
+      given-names: Aditya
+    - family-names: Deo
+      given-names: Arjun
+  collection-title: "2026 IEEE International Transportation Electrification Conference and Expo, Asia-Pacific (ITEC-AP)"
+  year: 2026
